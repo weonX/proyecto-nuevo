@@ -53,7 +53,7 @@ export class LoginPage {
     await alert.present(); 
   }
 
-  // Método para mostrar el modal de éxito al iniciar sesión
+  // Método para mostrar el modal de éxito al iniciar sesión (opcional)
   async presentModal() {
     const modal = await this.modalController.create({
       component: LoginSuccessModalComponent, 

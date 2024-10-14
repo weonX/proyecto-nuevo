@@ -1,30 +1,3 @@
-<!-- Menú lateral -->
-<ion-menu side="start" contentId="main-content">
-  <ion-header>
-    <ion-toolbar color="dark">
-      <ion-title color="warning">Menú</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content color="dark">
-    <ion-list>
-      <ion-item color="dark">
-        <ion-icon name="home" slot="start" color="warning"></ion-icon>
-        <ion-label color="warning">Inicio</ion-label>
-      </ion-item>
-      <!-- Mover "Tus Favoritos" debajo de "Inicio" -->
-      <ion-item color="dark" (click)="irAFavoritos()">
-        <ion-icon name="heart" slot="start" color="warning"></ion-icon>
-        <ion-label color="warning">Tus Favoritos</ion-label>
-      </ion-item>
-      <ion-item color="dark" (click)="cerrarSesion()">
-        <ion-icon name="log-out" slot="start" color="warning"></ion-icon>
-        <ion-label color="warning">Cerrar Sesión</ion-label>
-      </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
-
-<!-- Contenido principal -->
 <ion-content id="main-content" color="dark">
   <ion-header>
     <ion-toolbar color="dark">
@@ -35,7 +8,16 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Contenido de bienvenida con el nombre del usuario -->
+  <!-- Mostrar la ubicación y foto del usuario -->
+  <div class="ion-padding">
+    <ion-button expand="block" (click)="obtenerUbicacion()" color="warning">Obtener Ubicación</ion-button>
+    <p *ngIf="userLocation" class="ion-text-center" color="light">Tu ubicación: {{ userLocation }}</p>
+
+    <ion-button expand="block" (click)="tomarFoto()" color="warning" class="ion-margin-top">Tomar Foto</ion-button>
+    <img *ngIf="userPhoto" [src]="userPhoto" alt="Foto tomada" class="ion-margin-top"/>
+  </div>
+
+  <!-- Contenido de bienvenida y lista de películas -->
   <div *ngIf="!iniciado" class="ion-padding">
     <h1 class="ion-text-center" color="warning">Bienvenido {{ username }}</h1>
     <p class="ion-text-center" color="light">Explora nuestra colección de películas y descubre nuevos títulos.</p>

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { AuthService } from '../services/auth.service'; // Servicio de autenticación
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-registro',
@@ -16,14 +16,13 @@ export class RegistroPage {
   constructor(
     private router: Router,
     private alertController: AlertController,
-    private authService: AuthService // Agregar el servicio de autenticación
+    private authService: AuthService 
   ) {}
 
   // Método para manejar el registro de un nuevo usuario
   async registrar() {
     if (this.nombre && this.email && this.contrasena) {
       if (this.validarContrasena(this.contrasena) && this.validarEmail(this.email)) {
-        // Intentar registrar al usuario
         const isRegistered = await this.authService.register(this.email, this.contrasena);
 
         if (isRegistered) {
@@ -34,9 +33,8 @@ export class RegistroPage {
           });
 
           await alert.present();
-          this.router.navigate(['/login']); // Redirigir al login
+          this.router.navigate(['/login']); 
         } else {
-          // Si el usuario ya existe
           this.mostrarAlerta('Error', 'Este correo ya está registrado.');
         }
       } else {

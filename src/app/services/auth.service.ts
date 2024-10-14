@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage-angular';
+import { Storage } from '@ionic/storage-angular'; // Ionic Storage para persistencia
 
 @Injectable({
   providedIn: 'root',
@@ -39,7 +39,7 @@ export class AuthService {
     );
 
     if (userExists) {
-      await this.setUserSession(email);
+      await this.setUserSession(email); // Guarda sesión
       return true;
     }
     return false;

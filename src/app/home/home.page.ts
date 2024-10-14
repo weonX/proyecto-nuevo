@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
-import { IonicModule, AnimationController } from '@ionic/angular';
+import { IonicModule, AnimationController, AlertController } from '@ionic/angular';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationExtras } from '@angular/router';
@@ -7,6 +7,8 @@ import { AuthService } from '../services/auth.service';
 import { PeliculasService } from '../services/peliculas.service'; 
 import { Storage } from '@ionic/storage-angular'; 
 import { HttpClientModule } from '@angular/common/http'; 
+import { Geolocation } from '@capacitor/geolocation';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Importar cámara
 
 @Component({
   selector: 'app-home',
@@ -20,13 +22,16 @@ export class HomePage implements AfterViewInit, OnInit {
   peliculas: any[] = [];
   favoritos: any[] = [];
   username: string = ''; // Variable para almacenar el nombre de usuario
+  userLocation: string = ''; // Almacenar la ubicación del usuario
+  userPhoto: string | null = null; // Almacenar la foto del usuario
 
   constructor(
     private router: Router,
     private animationCtrl: AnimationController,
     private authService: AuthService,
     private peliculasService: PeliculasService, 
-    private storage: Storage 
+    private storage: Storage,
+    private alertController: AlertController
   ) {}
 
   async ngOnInit() {
@@ -40,7 +45,7 @@ export class HomePage implements AfterViewInit, OnInit {
       this.username = state.username;
     } else {
       // Si no hay un nombre de usuario en NavigationExtras, cargarlo del Storage
-      this.username = await this.authService.getUserEmail() || 'Usuario';
+      this.username = (await this.storage.get('email')) || 'Usuario'; // Usar email almacenado
     }
 
     // Cargar las películas
@@ -61,6 +66,7 @@ export class HomePage implements AfterViewInit, OnInit {
 
   // Agregar una película a favoritos
   async agregarAFavoritos(pelicula: any) {
+    // Recargar favoritos desde el storage para asegurarse de que están actualizados
     this.favoritos = (await this.storage.get('favoritos')) || [];
     const existe = this.favoritos.some(fav => fav.id === pelicula.id);
 
@@ -91,6 +97,42 @@ export class HomePage implements AfterViewInit, OnInit {
 
   irAFavoritos() {
     this.router.navigate(['/favoritos']);
+  }
+
+  // Función para obtener la ubicación del usuario
+  async obtenerUbicacion() {
+    try {
+      const coordinates = await Geolocation.getCurrentPosition();
+      this.userLocation = `Lat: ${coordinates.coords.latitude}, Lon: ${coordinates.coords.longitude}`;
+      alert(`Ubicación obtenida: ${this.userLocation}`);
+    } catch (error) {
+      await this.presentAlert('Error', 'No se pudo obtener la ubicación.');
+    }
+  }
+
+  // Función para tomar una foto con la cámara
+  async tomarFoto() {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera // Puedes usar CameraSource.Photos para abrir la galería
+      });
+      this.userPhoto = image.webPath || null; // Asegurar que no se asigne undefined
+      alert('Foto tomada exitosamente.');
+    } catch (error) {
+      await this.presentAlert('Error', 'No se pudo acceder a la cámara.');
+    }
+  }
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
   ngAfterViewInit() {
