@@ -19,6 +19,11 @@
     <h2>{{ pelicula?.titulo }}</h2>
     <p><strong>Género:</strong> {{ pelicula?.genero }}</p>
     <p><strong>Descripción:</strong> {{ pelicula?.descripcion }}</p>
+
+    <!-- Botón para agregar o eliminar de favoritos -->
+    <ion-button expand="full" color="primary" (click)="alternarFavorito()">
+      {{ esFavorito ? 'Eliminar de Favoritos' : 'Agregar a Favoritos' }}
+    </ion-button>
     
     <!-- Botón para retroceder -->
     <ion-button expand="full" color="warning" (click)="volverAlHome()">

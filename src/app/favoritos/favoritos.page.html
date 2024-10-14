@@ -31,7 +31,7 @@
   </ion-header>
 
   <!-- Lista de películas favoritas con opción de edición -->
-  <ion-card *ngFor="let pelicula of favoritos; let i = index" color="dark">
+  <ion-card *ngFor="let pelicula of favoritos" color="dark">
     <img [src]="pelicula.imagen" [alt]="pelicula.titulo">
     
     <!-- Mostrar la información si no está en modo edición -->

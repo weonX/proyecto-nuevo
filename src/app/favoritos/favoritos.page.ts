@@ -27,11 +27,13 @@ export class FavoritosPage implements OnInit {
     this.favoritos = (await this.storage.get('favoritos')) || []; // Cargar favoritos actualizados
   }
 
+  // Eliminar una película de favoritos
   eliminarFavorito(pelicula: any) {
-    this.favoritos = this.favoritos.filter(fav => fav.titulo !== pelicula.titulo);
+    this.favoritos = this.favoritos.filter(fav => fav.id !== pelicula.id); // Eliminar por ID
     this.storage.set('favoritos', this.favoritos); // Actualiza favoritos en almacenamiento
   }
 
+  // Editar una película en favoritos
   async editarFavorito(pelicula: any) {
     const alert = await this.alertController.create({
       header: 'Editar favorito',
@@ -61,19 +63,23 @@ export class FavoritosPage implements OnInit {
     await alert.present();
   }
 
+  // Guardar los cambios en la edición de una película
   guardarEdicion(pelicula: any) {
     pelicula.editing = false; // Desactivar el modo de edición
     this.storage.set('favoritos', this.favoritos); // Actualizar el almacenamiento con los cambios
   }
 
+  // Habilitar el modo de edición para una película
   habilitarEdicion(pelicula: any) {
     pelicula.editing = true; // Activar el modo de edición
   }
 
+  // Redirigir al home
   irAHome() {
     this.router.navigate(['/home']); // Navega a la página de inicio
   }
 
+  // Cerrar sesión
   cerrarSesion() {
     this.storage.remove('isLoggedIn'); // Cierra sesión
     this.router.navigate(['/login']); // Redirige a la página de login
