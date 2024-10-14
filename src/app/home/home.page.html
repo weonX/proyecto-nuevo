@@ -11,6 +11,11 @@
         <ion-icon name="home" slot="start" color="warning"></ion-icon>
         <ion-label color="warning">Inicio</ion-label>
       </ion-item>
+      <!-- Mover "Tus Favoritos" debajo de "Inicio" -->
+      <ion-item color="dark" (click)="irAFavoritos()">
+        <ion-icon name="heart" slot="start" color="warning"></ion-icon>
+        <ion-label color="warning">Tus Favoritos</ion-label>
+      </ion-item>
       <ion-item color="dark" (click)="cerrarSesion()">
         <ion-icon name="log-out" slot="start" color="warning"></ion-icon>
         <ion-label color="warning">Cerrar Sesión</ion-label>
@@ -53,7 +58,9 @@
       <ion-button fill="clear" color="warning" (click)="irAPeliculas(pelicula)">
         Ver detalles
       </ion-button>
-      <ion-button fill="clear" color="warning">Agregar a favoritos</ion-button>
+      <ion-button fill="clear" color="warning" (click)="agregarAFavoritos(pelicula)">
+        Agregar a favoritos
+      </ion-button>
     </ion-card>
   </div>
 </ion-content>

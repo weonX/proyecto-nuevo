@@ -5,7 +5,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-
+import { HttpClientModule } from '@angular/common/http'; // Importa HttpClientModule
 import { IonicStorageModule } from '@ionic/storage-angular'; // Importa Ionic Storage
 
 @NgModule({
@@ -14,6 +14,7 @@ import { IonicStorageModule } from '@ionic/storage-angular'; // Importa Ionic St
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
+    HttpClientModule,  // Asegúrate de tener HttpClientModule aquí
     IonicStorageModule.forRoot() // Inicializa Ionic Storage
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],

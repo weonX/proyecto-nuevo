@@ -1,0 +1,19 @@
+{
+    "peliculas": [
+      {
+        "id": 1,
+        "titulo": "Inception",
+        "genero": "Ciencia ficción / Acción",
+        "descripcion": "Un ladrón con la rara habilidad de 'extracción' roba secretos del subconsciente mientras la gente sueña.",
+        "imagen": "assets/inception.jpg"
+      },
+      {
+        "id": 2,
+        "titulo": "The Shawshank Redemption",
+        "genero": "Drama",
+        "descripcion": "Dos hombres encarcelados forjan una amistad a lo largo de varios años, encontrando consuelo y redención a través de actos de decencia común.",
+        "imagen": "assets/shawshank.jpg"
+      }
+    ]
+  }
+  

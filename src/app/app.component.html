@@ -1,3 +1,32 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu side="start" menuId="main-menu" contentId="main-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Menú</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <!-- Llama a la función navigateToHome() -->
+        <ion-item (click)="navigateToHome()">
+          <ion-icon name="home" slot="start"></ion-icon>
+          <ion-label>Inicio</ion-label>
+        </ion-item>
+
+        <!-- Llama a la función navigateToFavoritos() -->
+        <ion-item (click)="navigateToFavoritos()">
+          <ion-icon name="heart" slot="start"></ion-icon>
+          <ion-label>Favoritos</ion-label>
+        </ion-item>
+
+        <!-- Llama a la función cerrarSesion() -->
+        <ion-item (click)="cerrarSesion()">
+          <ion-icon name="log-out" slot="start"></ion-icon>
+          <ion-label>Cerrar Sesión</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main-content"></ion-router-outlet>
 </ion-app>
