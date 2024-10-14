@@ -31,7 +31,7 @@ export class PeliculasService {
   async addPeliculaAFavoritos(pelicula: Pelicula): Promise<void> {
     let favoritos: Pelicula[] = await this.storage.get(this.favoritosKey) || [];
 
-    // Volvemos a cargar la lista actualizada de favoritos antes de verificar
+    // Recargar la lista actualizada de favoritos antes de verificar
     const existe = favoritos.find(fav => fav.id === pelicula.id);
     
     if (!existe) {

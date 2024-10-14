@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service'; // Servicio de autenticación
 import { LoginSuccessModalComponent } from './login-success-modal.component'; // Modal opcional
@@ -29,8 +29,15 @@ export class LoginPage {
       // Si el inicio de sesión es exitoso, mostramos el modal de éxito (opcional)
       await this.presentModal(); // Muestra un modal opcional de éxito (puedes omitir esto si prefieres)
       
-      // Después de mostrar el modal, redirigimos al usuario a la página de inicio
-      this.router.navigate(['/home']);
+      // Pasar el nombre de usuario (email en este caso) a la página de inicio
+      const navigationExtras: NavigationExtras = {
+        state: {
+          username: this.email
+        }
+      };
+
+      // Redirigir a la página de inicio con el nombre de usuario
+      this.router.navigate(['/home'], navigationExtras);
     } else {
       // Si el inicio de sesión falla, mostramos una alerta de error
       await this.presentAlert('Error', 'Correo electrónico o contraseña incorrectos. Por favor, inténtalo de nuevo.');

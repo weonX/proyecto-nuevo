@@ -35,9 +35,9 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Contenido de bienvenida -->
+  <!-- Contenido de bienvenida con el nombre del usuario -->
   <div *ngIf="!iniciado" class="ion-padding">
-    <h1 class="ion-text-center" color="warning">Bienvenido a nuestra app de películas</h1>
+    <h1 class="ion-text-center" color="warning">Bienvenido {{ username }}</h1>
     <p class="ion-text-center" color="light">Explora nuestra colección de películas y descubre nuevos títulos.</p>
     <ion-button expand="block" (click)="comenzar()" color="warning" class="ion-margin-top">Comenzar</ion-button>
   </div>

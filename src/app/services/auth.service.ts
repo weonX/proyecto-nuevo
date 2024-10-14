@@ -5,12 +5,6 @@ import { Storage } from '@ionic/storage-angular'; // Ionic Storage para persiste
   providedIn: 'root',
 })
 export class AuthService {
-  private users: any[] = [
-    {
-      email: 'usuario@example.com',
-      password: 'Password1234', // Ejemplo de usuario registrado
-    }
-  ];
 
   constructor(private storage: Storage) {
     this.init();
@@ -22,31 +16,31 @@ export class AuthService {
     this.storage = storage;
   }
 
-  // Comprueba si un usuario ya existe en el sistema
-  checkUserExists(email: string): boolean {
-    return this.users.some(user => user.email === email);
+  // Método para registrar un nuevo usuario
+  async register(email: string, password: string): Promise<boolean> {
+    let users = await this.storage.get('users') || []; // Obtener usuarios existentes o un arreglo vacío
+
+    // Verificar si el usuario ya existe
+    const userExists = users.some((user: any) => user.email === email);
+    if (userExists) {
+      return false; // El usuario ya está registrado
+    }
+
+    // Agregar el nuevo usuario al arreglo
+    users.push({ email, password });
+    await this.storage.set('users', users); // Guardar los usuarios actualizados en el almacenamiento
+
+    return true; // Registro exitoso
   }
 
   // Método para validar el login con email y contraseña
   async login(email: string, password: string): Promise<boolean> {
-    // Expresión regular para validar el formato del email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Expresión regular para validar la contraseña:
-    const passwordRegex = /^(?=.*\d{4})(?=.*[a-z]{3})(?=.*[A-Z]).{8,}$/;
-
-    // Valida si el email y la contraseña cumplen con los requisitos
-    const isValidEmail = emailRegex.test(email);
-    const isValidPassword = passwordRegex.test(password);
-
-    if (!isValidEmail || !isValidPassword) {
-      return false; // Retorna false si el formato de email o contraseña es incorrecto
-    }
+    let users = await this.storage.get('users') || []; // Obtener la lista de usuarios desde el almacenamiento
 
     // Comprobamos si las credenciales coinciden con un usuario registrado
-    const userExists = this.users.find(user => user.email === email && user.password === password);
+    const userExists = users.find((user: any) => user.email === email && user.password === password);
     if (userExists) {
-      await this.setUserSession(email); // Llamada asíncrona a setUserSession
+      await this.setUserSession(email); // Iniciar la sesión del usuario
       return true; // Autenticación exitosa
     }
 
@@ -59,7 +53,7 @@ export class AuthService {
     await this.storage.set('email', email);     // Guarda el email del usuario autenticado
   }
 
-  // Verifica si el usuario está autenticado (para AuthGuard)
+  // Verifica si el usuario está autenticado
   async isLoggedIn(): Promise<boolean> {
     const loggedIn = await this.storage.get('isLoggedIn');
     return loggedIn === true;
