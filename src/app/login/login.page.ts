@@ -22,13 +22,12 @@ export class LoginPage {
 
   // Método para manejar el inicio de sesión
   async login() {
-    // Llamamos al método de autenticación en el servicio AuthService
     const isAuthenticated = await this.authService.login(this.email, this.password);
 
     if (isAuthenticated) {
       // Si el inicio de sesión es exitoso, mostramos el modal de éxito (opcional)
-      await this.presentModal(); // Muestra un modal opcional de éxito (puedes omitir esto si prefieres)
-      
+      await this.presentModal();
+
       // Pasar el nombre de usuario (email en este caso) a la página de inicio
       const navigationExtras: NavigationExtras = {
         state: {
@@ -44,6 +43,25 @@ export class LoginPage {
     }
   }
 
+  // Método para mostrar una alerta
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header, 
+      message, 
+      buttons: ['OK'],
+    });
+    await alert.present(); 
+  }
+
+  // Método para mostrar el modal de éxito al iniciar sesión
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: LoginSuccessModalComponent, 
+      cssClass: 'my-custom-class',
+    });
+    return await modal.present();
+  }
+
   // Método para navegar a la página de registro
   navigateToRegistro() {
     this.router.navigate(['/registro']);
@@ -52,24 +70,5 @@ export class LoginPage {
   // Método para navegar a la página de restablecimiento de contraseña
   navigateToResetPassword() {
     this.router.navigate(['/reset-password']);
-  }
-
-  // Método para mostrar una alerta
-  async presentAlert(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header, // Título de la alerta
-      message, // Mensaje de la alerta
-      buttons: ['OK'], // Botón de confirmación
-    });
-    await alert.present(); // Presenta la alerta en la pantalla
-  }
-
-  // Método para mostrar el modal de éxito al iniciar sesión
-  async presentModal() {
-    const modal = await this.modalController.create({
-      component: LoginSuccessModalComponent, // Especifica el componente del modal
-      cssClass: 'my-custom-class', // Clase CSS opcional para estilizar el modal
-    });
-    return await modal.present(); // Muestra el modal
   }
 }

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage-angular'; // Ionic Storage para persistencia
+import { Storage } from '@ionic/storage-angular';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-
   constructor(private storage: Storage) {
     this.init();
   }
@@ -18,39 +17,38 @@ export class AuthService {
 
   // Método para registrar un nuevo usuario
   async register(email: string, password: string): Promise<boolean> {
-    let users = await this.storage.get('users') || []; // Obtener usuarios existentes o un arreglo vacío
+    let users = (await this.storage.get('users')) || [];
 
     // Verificar si el usuario ya existe
     const userExists = users.some((user: any) => user.email === email);
     if (userExists) {
-      return false; // El usuario ya está registrado
+      return false;
     }
 
     // Agregar el nuevo usuario al arreglo
     users.push({ email, password });
-    await this.storage.set('users', users); // Guardar los usuarios actualizados en el almacenamiento
-
-    return true; // Registro exitoso
+    await this.storage.set('users', users);
+    return true;
   }
 
   // Método para validar el login con email y contraseña
   async login(email: string, password: string): Promise<boolean> {
-    let users = await this.storage.get('users') || []; // Obtener la lista de usuarios desde el almacenamiento
+    let users = (await this.storage.get('users')) || [];
+    const userExists = users.find(
+      (user: any) => user.email === email && user.password === password
+    );
 
-    // Comprobamos si las credenciales coinciden con un usuario registrado
-    const userExists = users.find((user: any) => user.email === email && user.password === password);
     if (userExists) {
-      await this.setUserSession(email); // Iniciar la sesión del usuario
-      return true; // Autenticación exitosa
+      await this.setUserSession(email);
+      return true;
     }
-
-    return false; // Usuario o contraseña incorrectos
+    return false;
   }
 
   // Guarda la sesión del usuario en Ionic Storage
   async setUserSession(email: string): Promise<void> {
-    await this.storage.set('isLoggedIn', true); // Guarda el estado de autenticación
-    await this.storage.set('email', email);     // Guarda el email del usuario autenticado
+    await this.storage.set('isLoggedIn', true);
+    await this.storage.set('email', email);
   }
 
   // Verifica si el usuario está autenticado
@@ -61,8 +59,8 @@ export class AuthService {
 
   // Cierra la sesión del usuario
   async logout(): Promise<void> {
-    await this.storage.remove('isLoggedIn'); // Elimina el estado de autenticación
-    await this.storage.remove('email');      // Elimina el email almacenado
+    await this.storage.remove('isLoggedIn');
+    await this.storage.remove('email');
   }
 
   // Obtiene el email del usuario actualmente autenticado

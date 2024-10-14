@@ -36,16 +36,16 @@ export class PeliculasPage implements OnInit {
 
   // Verificar si la película está en favoritos
   async verificarFavorito(pelicula: any): Promise<boolean> {
-    const favoritos = await this.peliculasService.getFavoritos();
-    return favoritos.some(fav => fav.id === pelicula.id);
+    const favoritos = await this.peliculasService.getFavoritosLocal().toPromise(); // Ajuste a Promise para esperar los resultados
+    return Array.isArray(favoritos) && favoritos.some((fav: any) => fav.id === pelicula.id);
   }
 
   // Agregar o eliminar de favoritos
   async alternarFavorito() {
     if (this.esFavorito) {
-      await this.peliculasService.eliminarDeFavoritos(this.pelicula);
+      await this.peliculasService.eliminarDeFavoritosLocal(this.pelicula.id);
     } else {
-      await this.peliculasService.addPeliculaAFavoritos(this.pelicula);
+      await this.peliculasService.addPeliculaAFavoritosLocal(this.pelicula);
     }
     this.esFavorito = !this.esFavorito; // Cambia el estado
   }

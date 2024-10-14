@@ -40,7 +40,7 @@ export class HomePage implements AfterViewInit, OnInit {
       this.username = state.username;
     } else {
       // Si no hay un nombre de usuario en NavigationExtras, cargarlo del Storage
-      this.username = await this.storage.get('email') || 'Usuario'; // Cargar desde el Storage
+      this.username = await this.authService.getUserEmail() || 'Usuario';
     }
 
     // Cargar las películas
@@ -61,7 +61,6 @@ export class HomePage implements AfterViewInit, OnInit {
 
   // Agregar una película a favoritos
   async agregarAFavoritos(pelicula: any) {
-    // Recargar favoritos desde el storage para asegurarse de que están actualizados
     this.favoritos = (await this.storage.get('favoritos')) || [];
     const existe = this.favoritos.some(fav => fav.id === pelicula.id);
 

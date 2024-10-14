@@ -5,8 +5,9 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http'; // Importa HttpClientModule
-import { IonicStorageModule } from '@ionic/storage-angular'; // Importa Ionic Storage
+import { HttpClientModule } from '@angular/common/http';
+import { IonicStorageModule } from '@ionic/storage-angular';
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx'; // Asegúrate de importar SQLite
 
 @NgModule({
   declarations: [AppComponent],
@@ -14,10 +15,13 @@ import { IonicStorageModule } from '@ionic/storage-angular'; // Importa Ionic St
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    HttpClientModule,  // Asegúrate de tener HttpClientModule aquí
-    IonicStorageModule.forRoot() // Inicializa Ionic Storage
+    HttpClientModule,
+    IonicStorageModule.forRoot(),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    SQLite, // Agregar SQLite aquí
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
