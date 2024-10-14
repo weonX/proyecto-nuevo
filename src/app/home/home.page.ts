@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationExtras } from '@angular/router';
 import { AuthService } from '../services/auth.service'; 
-import { PeliculasService } from '../services/peliculas.service';
+import { PeliculasService } from '../services/peliculas.service'; // Corregido: ruta correcta
 import { Storage } from '@ionic/storage-angular'; 
 import { HttpClientModule } from '@angular/common/http'; 
 
