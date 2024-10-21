@@ -22,7 +22,11 @@ const routes: Routes = [
   { path: 'reset-password', loadChildren: () => import('./reset-password/reset-password.module').then(m => m.ResetPasswordPageModule) },
   
   // Ruta protegida para la página de favoritos, usando AuthGuard
-  { path: 'favoritos', loadChildren: () => import('./favoritos/favoritos.module').then(m => m.FavoritosPageModule), canActivate: [AuthGuard] }
+  { path: 'favoritos', loadChildren: () => import('./favoritos/favoritos.module').then(m => m.FavoritosPageModule), canActivate: [AuthGuard] },  {
+    path: 'perfil',
+    loadChildren: () => import('./perfil/perfil.module').then( m => m.PerfilPageModule)
+  }
+
 ];
 
 @NgModule({
