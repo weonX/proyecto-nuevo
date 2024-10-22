@@ -21,12 +21,12 @@ export class PerfilPage {
 
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
-    this.checkAuthentication();
+    this.verificarAutenticacion();
   }
 
-  async checkAuthentication() {
-    const isLoggedIn = await this.authService.isLoggedIn();
-    if (!isLoggedIn) {
+  async verificarAutenticacion() {
+    const estaLogueado = await this.authService.isLoggedIn();
+    if (!estaLogueado) {
       this.router.navigate(['/login']);
     }
   }
