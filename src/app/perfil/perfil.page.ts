@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { CameraService } from '../services/camera.service';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-perfil',
@@ -12,11 +14,21 @@ export class PerfilPage {
 
   constructor(
     private menuCtrl: MenuController,
-    private cameraService: CameraService
+    private cameraService: CameraService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
+    this.checkAuthentication();
+  }
+
+  async checkAuthentication() {
+    const isLoggedIn = await this.authService.isLoggedIn();
+    if (!isLoggedIn) {
+      this.router.navigate(['/login']);
+    }
   }
 
   async takePicture() {
