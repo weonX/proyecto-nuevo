@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, MenuController } from '@ionic/angular';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-favoritos',
@@ -9,31 +10,31 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./favoritos.page.scss'],
 })
 export class FavoritosPage implements OnInit {
-  favoritos: any[] = []; // Lista de favoritos
+  favoritos: any[] = [];
 
   constructor(
-    private storage: Storage, 
+    private storage: Storage,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private menuCtrl: MenuController,
+    private authService: AuthService
   ) {}
 
   async ngOnInit() {
-    await this.storage.create(); // Inicializar el almacenamiento
-    this.favoritos = (await this.storage.get('favoritos')) || []; // Cargar favoritos
+    await this.storage.create();
+    this.favoritos = (await this.storage.get('favoritos')) || [];
   }
 
-  // Cargar los favoritos cada vez que la página se activa
   async ionViewWillEnter() {
-    this.favoritos = (await this.storage.get('favoritos')) || []; // Cargar favoritos actualizados
+    this.menuCtrl.enable(true);
+    this.favoritos = (await this.storage.get('favoritos')) || [];
   }
 
-  // Eliminar una película de favoritos
   eliminarFavorito(pelicula: any) {
-    this.favoritos = this.favoritos.filter(fav => fav.id !== pelicula.id); // Eliminar por ID
-    this.storage.set('favoritos', this.favoritos); // Actualiza favoritos en almacenamiento
+    this.favoritos = this.favoritos.filter(fav => fav.id !== pelicula.id);
+    this.storage.set('favoritos', this.favoritos);
   }
 
-  // Editar una película en favoritos
   async editarFavorito(pelicula: any) {
     const alert = await this.alertController.create({
       header: 'Editar favorito',
@@ -42,7 +43,7 @@ export class FavoritosPage implements OnInit {
           name: 'nota',
           type: 'text',
           placeholder: 'Agregar una nota personal',
-          value: pelicula.nota || '' // Mostramos la nota actual si existe
+          value: pelicula.nota || ''
         }
       ],
       buttons: [
@@ -53,8 +54,8 @@ export class FavoritosPage implements OnInit {
         {
           text: 'Guardar',
           handler: (data) => {
-            pelicula.nota = data.nota; // Actualizamos la nota
-            this.storage.set('favoritos', this.favoritos); // Guardamos los cambios en el almacenamiento
+            pelicula.nota = data.nota;
+            this.storage.set('favoritos', this.favoritos);
           }
         }
       ]
@@ -63,25 +64,21 @@ export class FavoritosPage implements OnInit {
     await alert.present();
   }
 
-  // Guardar los cambios en la edición de una película
   guardarEdicion(pelicula: any) {
-    pelicula.editing = false; // Desactivar el modo de edición
-    this.storage.set('favoritos', this.favoritos); // Actualizar el almacenamiento con los cambios
+    pelicula.editing = false;
+    this.storage.set('favoritos', this.favoritos);
   }
 
-  // Habilitar el modo de edición para una película
   habilitarEdicion(pelicula: any) {
-    pelicula.editing = true; // Activar el modo de edición
+    pelicula.editing = true;
   }
 
-  // Redirigir al home
   irAHome() {
-    this.router.navigate(['/home']); // Navega a la página de inicio
+    this.router.navigate(['/home']);
   }
 
-  // Cerrar sesión
-  cerrarSesion() {
-    this.storage.remove('isLoggedIn'); // Cierra sesión
-    this.router.navigate(['/login']); // Redirige a la página de login
+  async cerrarSesion() {
+    await this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

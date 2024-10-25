@@ -1,48 +1,62 @@
-<ion-content id="main-content" color="dark">
+<ion-menu side="start" menuId="main-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar color="dark">
+      <ion-title color="warning">Menú</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content color="dark">
+    <ion-list>
+      <ion-item (click)="irAHome()">
+        <ion-icon name="home" slot="start" color="warning"></ion-icon>
+        <ion-label color="warning">Inicio</ion-label>
+      </ion-item>
+      <ion-item (click)="cerrarSesion()">
+        <ion-icon name="log-out" slot="start" color="warning"></ion-icon>
+        <ion-label color="warning">Cerrar Sesión</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
   <ion-header>
     <ion-toolbar color="dark">
       <ion-buttons slot="start">
         <ion-menu-button color="warning"></ion-menu-button>
       </ion-buttons>
-      <ion-title color="warning">Películas</ion-title>
+      <ion-title color="warning">Inicio</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <!-- Mostrar la ubicación y foto del usuario -->
-  <div class="ion-padding">
-    <ion-button expand="block" (click)="obtenerUbicacion()" color="warning">Obtener Ubicación</ion-button>
-    <p *ngIf="userLocation" class="ion-text-center" color="light">Tu ubicación: {{ userLocation }}</p>
+  <ion-content color="dark">
+    <!-- Contenido de bienvenida y lista de películas -->
+    <div *ngIf="!iniciado" class="ion-padding">
+      <h1 class="ion-text-center" color="warning">Bienvenido {{ username }}</h1>
+      <p class="ion-text-center" color="light">Explora nuestra colección de películas y descubre nuevos títulos.</p>
+      <ion-button expand="block" (click)="comenzar()" color="warning" class="ion-margin-top">Comenzar</ion-button>
+    </div>
 
-    <ion-button expand="block" (click)="tomarFoto()" color="warning" class="ion-margin-top">Tomar Foto</ion-button>
-    <img *ngIf="userPhoto" [src]="userPhoto" alt="Foto tomada" class="ion-margin-top"/>
-  </div>
-
-  <!-- Contenido de bienvenida y lista de películas -->
-  <div *ngIf="!iniciado" class="ion-padding">
-    <h1 class="ion-text-center" color="warning">Bienvenido {{ username }}</h1>
-    <p class="ion-text-center" color="light">Explora nuestra colección de películas y descubre nuevos títulos.</p>
-    <ion-button expand="block" (click)="comenzar()" color="warning" class="ion-margin-top">Comenzar</ion-button>
-  </div>
-
-  <!-- Lista de películas -->
-  <div *ngIf="iniciado" class="ion-padding">
-    <ion-card *ngFor="let pelicula of peliculas" color="dark" 
-              [ngStyle]="{'--animation-duration': '1s'}"
-              [ngClass]="{'animate-card': iniciado}">
-      <img [src]="pelicula.imagen" [alt]="pelicula.titulo">
-      <ion-card-header>
-        <ion-card-title color="warning">{{ pelicula.titulo }}</ion-card-title>
-        <ion-card-subtitle color="light">{{ pelicula.genero }}</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content color="light">
-        <p>{{ pelicula.descripcion }}</p>
-      </ion-card-content>
-      <ion-button fill="clear" color="warning" (click)="irAPeliculas(pelicula)">
-        Ver detalles
-      </ion-button>
-      <ion-button fill="clear" color="warning" (click)="agregarAFavoritos(pelicula)">
-        Agregar a favoritos
-      </ion-button>
-    </ion-card>
-  </div>
-</ion-content>
+    <!-- Lista de películas -->
+    <div *ngIf="iniciado" class="ion-padding">
+      <ion-card *ngFor="let pelicula of peliculas" color="dark"
+                [ngStyle]="{'--animation-duration': '1s'}"
+                [ngClass]="{'animate-card': iniciado}">
+        <img [src]="pelicula.imagen" [alt]="pelicula.titulo" [title]="pelicula.titulo">
+        <ion-card-header>
+          <ion-card-title color="warning">{{ pelicula.titulo }}</ion-card-title>
+          <ion-card-subtitle color="light">{{ pelicula.genero }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content color="light">
+          <p>{{ pelicula.descripcion }}</p>
+        </ion-card-content>
+        <ion-button fill="clear" color="warning" (click)="irAPeliculas(pelicula)">
+          Ver detalles
+        </ion-button>
+        <ion-button fill="clear" color="warning" (click)="agregarAFavoritos(pelicula)">
+          Agregar a favoritos
+        </ion-button>
+      </ion-card>
+    </div>
+  </ion-content>
+</div>

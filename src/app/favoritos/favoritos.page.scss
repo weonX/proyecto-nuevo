@@ -1,0 +1,21 @@
+
+ion-content {
+  --ion-background-color: var(--ion-color-dark);
+}
+
+ion-header {
+  --ion-border-color: transparent;
+}
+
+ion-toolbar {
+  --border-width: 0;
+  --border-color: transparent;
+}
+
+ion-list {
+  background: var(--ion-color-dark);
+}
+
+ion-item {
+  --border-color: var(--ion-color-dark);
+}
