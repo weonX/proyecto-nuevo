@@ -7,6 +7,12 @@
     </ion-header>
     <ion-content>
       <ion-list>
+        <ion-item *ngIf="fotoPerfil"> <!-- Mostrar solo si fotoPerfil está definido -->
+          <ion-avatar slot="start">
+            <img [src]="fotoPerfil" alt="Foto de perfil" />
+          </ion-avatar>
+        </ion-item>
+
         <!-- Llama a la función navigateToHome() -->
         <ion-item (click)="navigateToHome()">
           <ion-icon name="home" slot="start"></ion-icon>
@@ -35,4 +41,9 @@
   </ion-menu>
 
   <ion-router-outlet id="main-content"></ion-router-outlet>
+
+  <!-- Avatar en la parte inferior izquierda -->
+  <ion-avatar *ngIf="fotoPerfil" class="profile-avatar">
+    <img [src]="fotoPerfil" alt="Foto de perfil" />
+  </ion-avatar>
 </ion-app>
