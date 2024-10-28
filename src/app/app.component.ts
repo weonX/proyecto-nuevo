@@ -9,7 +9,6 @@ import { MenuController } from '@ionic/angular'; // Importa MenuController para 
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-
   constructor(
     private storage: Storage,
     private router: Router,
@@ -28,6 +27,7 @@ export class AppComponent {
     await this.storage.remove('email');      // Elimina el email almacenado
     await this.menuCtrl.close();             // Cierra el menú
     this.router.navigate(['/login']);        // Redirige al usuario al login
+    console.log('Sesión cerrada');
   }
 
   // Función para navegar a la página de inicio
@@ -40,5 +40,11 @@ export class AppComponent {
   async navigateToFavoritos() {
     await this.menuCtrl.close();             // Cierra el menú
     this.router.navigate(['/favoritos']);    // Navega a la página de favoritos
+  }
+
+  // Función para navegar a la página de perfil
+  async navigateToPerfil() {
+    await this.menuCtrl.close();             // Cierra el menú
+    this.router.navigate(['/perfil']);       // Navega a la página de perfil
   }
 }

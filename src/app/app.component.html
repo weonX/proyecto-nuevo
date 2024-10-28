@@ -19,6 +19,12 @@
           <ion-label>Favoritos</ion-label>
         </ion-item>
 
+        <!-- Llama a la función navigateToPerfil() -->
+        <ion-item (click)="navigateToPerfil()">
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-label>Perfil</ion-label>
+        </ion-item>
+
         <!-- Llama a la función cerrarSesion() -->
         <ion-item (click)="cerrarSesion()">
           <ion-icon name="log-out" slot="start"></ion-icon>

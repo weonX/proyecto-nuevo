@@ -8,15 +8,6 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Mostrar la ubicación y foto del usuario -->
-  <div class="ion-padding">
-    <ion-button expand="block" (click)="obtenerUbicacion()" color="warning">Obtener Ubicación</ion-button>
-    <p *ngIf="userLocation" class="ion-text-center" color="light">Tu ubicación: {{ userLocation }}</p>
-
-    <ion-button expand="block" (click)="tomarFoto()" color="warning" class="ion-margin-top">Tomar Foto</ion-button>
-    <img *ngIf="userPhoto" [src]="userPhoto" alt="Foto tomada" class="ion-margin-top"/>
-  </div>
-
   <!-- Contenido de bienvenida y lista de películas -->
   <div *ngIf="!iniciado" class="ion-padding">
     <h1 class="ion-text-center" color="warning">Bienvenido {{ username }}</h1>

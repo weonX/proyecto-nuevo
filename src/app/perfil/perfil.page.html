@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button color="warning"></ion-menu-button>
+    </ion-buttons>
+    <ion-title color="warning">Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="page-perfil">
+  <h2>Perfil de Usuario</h2>
+  
+    <div class="profile-photo-container">
+      <img [src]="profilePhotoUrl" alt="Foto de perfil" *ngIf="profilePhotoUrl">
+      <p *ngIf="!profilePhotoUrl">Insertar foto</p>
+    </div>
+
+    <ion-button expand="block" (click)="takePicture()">
+      <ion-icon name="camera-outline" slot="start"></ion-icon>
+      Tomar foto
+    </ion-button>
+
+    <!-- Otros elementos del perfil -->
+  </ion-content>
