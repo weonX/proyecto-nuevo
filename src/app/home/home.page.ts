@@ -8,7 +8,10 @@ import { PeliculasService } from '../services/peliculas.service';
 import { Storage } from '@ionic/storage-angular'; 
 import { HttpClientModule } from '@angular/common/http'; 
 import { Geolocation } from '@capacitor/geolocation';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Importar cámara
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; 
+import { TmdbService } from '../services/tmdb.service'; 
+import { Pelicula } from '../services/pelicula.interface'; 
+import { FavoritosService } from '../services/favoritos.service'; 
 
 @Component({
   selector: 'app-home',
@@ -19,11 +22,12 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // I
 })
 export class HomePage implements AfterViewInit, OnInit {
   iniciado: boolean = false;
-  peliculas: any[] = [];
-  favoritos: any[] = [];
-  username: string = ''; // Variable para almacenar el nombre de usuario
-  userLocation: string = ''; // Almacenar la ubicación del usuario
-  userPhoto: string | null = null; // Almacenar la foto del usuario
+  peliculas: Pelicula[] = []; 
+  favoritos: Pelicula[] = []; 
+  username: string = ''; 
+  userLocation: string = ''; 
+  userPhoto: string | null = null; 
+  generos: { [id: number]: string } = {}; 
 
   constructor(
     private router: Router,
@@ -31,26 +35,39 @@ export class HomePage implements AfterViewInit, OnInit {
     private authService: AuthService,
     private peliculasService: PeliculasService, 
     private storage: Storage,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private tmdbService: TmdbService, 
+    private favoritosService: FavoritosService 
   ) {}
 
   async ngOnInit() {
     await this.storage.create(); 
     this.favoritos = (await this.storage.get('favoritos')) || [];
 
-    // Obtener el nombre del usuario mediante NavigationExtras o Storage
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras.state) {
       const state = navigation.extras.state as { username: string };
       this.username = state.username;
     } else {
-      // Si no hay un nombre de usuario en NavigationExtras, cargarlo del Storage
-      this.username = (await this.storage.get('email')) || 'Usuario'; // Usar email almacenado
+      this.username = (await this.storage.get('email')) || 'Usuario';
     }
 
-    // Cargar las películas
-    this.peliculasService.getPeliculas().subscribe((data) => {
-      this.peliculas = data;
+    this.tmdbService.getGenres().subscribe((data) => {
+      this.generos = data.genres.reduce((acc: { [id: number]: string }, genre: any) => {
+        acc[genre.id] = genre.name;
+        return acc;
+      }, {});
+
+      this.tmdbService.getPopularMovies().subscribe((data) => {
+        this.peliculas = data.results.map((pelicula: any) => ({
+          id: pelicula.id,
+          titulo: pelicula.title,
+          descripcion: pelicula.overview,
+          genero: pelicula.genre_ids.map((id: number) => this.generos[id] || 'Desconocido').join(', '),
+          imagen: `https://image.tmdb.org/t/p/w500${pelicula.poster_path}`,
+          poster_path: pelicula.poster_path
+        }));
+      });
     });
   }
 
@@ -64,75 +81,52 @@ export class HomePage implements AfterViewInit, OnInit {
     this.iniciado = true;
   }
 
-  // Agregar una película a favoritos
-  async agregarAFavoritos(pelicula: any) {
-    // Recargar favoritos desde el storage para asegurarse de que están actualizados
+  async agregarAFavoritos(pelicula: Pelicula) {
     this.favoritos = (await this.storage.get('favoritos')) || [];
+
     const existe = this.favoritos.some(fav => fav.id === pelicula.id);
 
     if (!existe) {
       this.favoritos.push(pelicula);
       await this.storage.set('favoritos', this.favoritos);
-      alert('Película agregada a favoritos.');
+
+      this.favoritosService.agregarFavorito(pelicula).subscribe(
+        () => alert('Película agregada a favoritos.'),
+        (error) => alert('Error al agregar la película a favoritos.')
+      );
     } else {
       alert('Esta película ya está en tus favoritos.');
     }
   }
 
-  // Eliminar una película de favoritos
-  async eliminarFavorito(pelicula: any) {
+  async eliminarFavorito(pelicula: Pelicula) {
     this.favoritos = this.favoritos.filter(fav => fav.id !== pelicula.id); 
     await this.storage.set('favoritos', this.favoritos); 
     alert('Película eliminada de favoritos.');
+
+    this.favoritosService.eliminarFavorito(pelicula.id).subscribe(
+      () => alert('Película eliminada de favoritos en el servidor.'),
+      (error) => alert('Error al eliminar la película de favoritos.')
+    );
   }
 
-  irAPeliculas(pelicula: any) {
-    let navigationExtras: NavigationExtras = {
-      state: {
-        pelicula: pelicula
+  async guardarCalificacion(pelicula: Pelicula) {
+    if (!pelicula.calificacion || !pelicula.nota) {
+      alert('Por favor, ingresa una calificación y una nota.');
+      return;
+    }
+
+    const peliculaActualizada = { ...pelicula, calificacion: pelicula.calificacion, nota: pelicula.nota };
+
+    this.favoritosService.actualizarFavorito(pelicula.id, peliculaActualizada).subscribe(
+      () => {
+        alert('Calificación y nota guardadas.');
+      },
+      (error) => {
+        console.error('Error al guardar la calificación y nota:', error);
+        alert('Hubo un problema al guardar la calificación y nota.');
       }
-    };
-    this.router.navigate(['/peliculas'], navigationExtras);
-  }
-
-  irAFavoritos() {
-    this.router.navigate(['/favoritos']);
-  }
-
-  // Función para obtener la ubicación del usuario
-  async obtenerUbicacion() {
-    try {
-      const coordinates = await Geolocation.getCurrentPosition();
-      this.userLocation = `Lat: ${coordinates.coords.latitude}, Lon: ${coordinates.coords.longitude}`;
-      alert(`Ubicación obtenida: ${this.userLocation}`);
-    } catch (error) {
-      await this.presentAlert('Error', 'No se pudo obtener la ubicación.');
-    }
-  }
-
-  // Función para tomar una foto con la cámara
-  async tomarFoto() {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 90,
-        allowEditing: false,
-        resultType: CameraResultType.Uri,
-        source: CameraSource.Camera // Puedes usar CameraSource.Photos para abrir la galería
-      });
-      this.userPhoto = image.webPath || null; // Asegurar que no se asigne undefined
-      alert('Foto tomada exitosamente.');
-    } catch (error) {
-      await this.presentAlert('Error', 'No se pudo acceder a la cámara.');
-    }
-  }
-
-  async presentAlert(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header,
-      message,
-      buttons: ['OK']
-    });
-    await alert.present();
+    );
   }
 
   ngAfterViewInit() {

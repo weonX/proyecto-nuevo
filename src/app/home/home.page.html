@@ -20,15 +20,18 @@
     <ion-card *ngFor="let pelicula of peliculas" color="dark" 
               [ngStyle]="{'--animation-duration': '1s'}"
               [ngClass]="{'animate-card': iniciado}">
+      <!-- Mostrar la imagen de la película -->
       <img [src]="pelicula.imagen" [alt]="pelicula.titulo">
       <ion-card-header>
+        <!-- Título de la película -->
         <ion-card-title color="warning">{{ pelicula.titulo }}</ion-card-title>
+        <!-- Género de la película -->
         <ion-card-subtitle color="light">{{ pelicula.genero }}</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content color="light">
+        <!-- Descripción de la película -->
         <p>{{ pelicula.descripcion }}</p>
       </ion-card-content>
-      <!-- Se eliminó el botón "Ver detalles" -->
       <ion-button fill="clear" color="warning" (click)="agregarAFavoritos(pelicula)">
         Agregar a favoritos
       </ion-button>

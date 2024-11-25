@@ -1,21 +1,15 @@
 {
-  "peliculas": [
+  "favoritos": [
     {
-      "id": "1",
-      "titulo": "Inception",
-      "genero": "Ciencia ficción / Acción",
-      "descripcion": "Un ladrón con la rara habilidad de 'extracción' roba secretos del subconsciente mientras la gente sueña.",
-      "imagen": "assets/inception.jpg"
-    },
-    {
-      "id": "2",
-      "titulo": "The Shawshank Redemption",
-      "genero": "Drama",
-      "descripcion": "Dos hombres encarcelados forjan una amistad a lo largo de varios años, encontrando consuelo y redención a través de actos de decencia común.",
-      "imagen": "assets/The Shawshank Redemption.jpg"
+      "id": "912649",
+      "titulo": "Venom: El último baile",
+      "genero": "Ciencia ficción, Acción, Aventura",
+      "descripcion": "Eddie y Venom están a la fuga. Perseguidos por sus sendos mundos y cada vez más cercados, el dúo se ve abocado a tomar una decisión devastadora que hará que caiga el telón sobre el último baile de Venom y Eddie.",
+      "imagen": "https://image.tmdb.org/t/p/w500/b0obWWCLRVRqRzlSK1LSGtADkLM.jpg",
+      "calificacion": 5,
+      "nota": "aaaa"
     }
   ],
-  "favoritos": [],
   "usuarios": [
     {
       "id": "eea1",

@@ -42,7 +42,9 @@ export class PeliculasService {
           titulo TEXT,
           genero TEXT,
           descripcion TEXT,
-          imagen TEXT
+          imagen TEXT,
+          calificacion INTEGER,
+          nota TEXT
         )`, []);
     } catch (e) {
       console.error('Error al crear la base de datos SQLite', e);
@@ -70,8 +72,8 @@ export class PeliculasService {
 
   // Agregar una película a favoritos en SQLite
   async addPeliculaAFavoritosLocal(pelicula: Pelicula): Promise<void> {
-    const query = 'INSERT INTO favoritos (id, titulo, genero, descripcion, imagen) VALUES (?, ?, ?, ?, ?)';
-    await this.db.executeSql(query, [pelicula.id, pelicula.titulo, pelicula.genero, pelicula.descripcion, pelicula.imagen]);
+    const query = 'INSERT INTO favoritos (id, titulo, genero, descripcion, imagen, calificacion, nota) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    await this.db.executeSql(query, [pelicula.id, pelicula.titulo, pelicula.genero, pelicula.descripcion, pelicula.imagen, pelicula.calificacion, pelicula.nota]);
   }
 
   // Eliminar una película de favoritos en SQLite

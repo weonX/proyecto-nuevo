@@ -1,72 +1,38 @@
-<!-- Menú lateral -->
-<ion-menu side="start" menuId="main-menu" contentId="main-content">
-  <ion-header>
-    <ion-toolbar color="dark">
-      <ion-title color="warning">Menú</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content color="dark">
-    <ion-list>
-      <ion-item (click)="irAHome()">
-        <ion-icon name="home" slot="start" color="warning"></ion-icon>
-        <ion-label color="warning">Inicio</ion-label>
-      </ion-item>
-      <ion-item (click)="cerrarSesion()">
-        <ion-icon name="log-out" slot="start" color="warning"></ion-icon>
-        <ion-label color="warning">Cerrar Sesión</ion-label>
-      </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
-
-<!-- Contenido principal con lista de favoritos -->
-<ion-content id="main-content" class="ion-padding" color="dark">
+<ion-content>
   <ion-header>
     <ion-toolbar color="dark">
       <ion-buttons slot="start">
-        <ion-menu-button color="warning" menu="main-menu"></ion-menu-button>
+        <ion-menu-button color="warning"></ion-menu-button>
       </ion-buttons>
-      <ion-title color="warning">Películas Favoritas</ion-title>
+      <ion-title color="warning">Favoritos</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <!-- Lista de películas favoritas con opción de edición -->
   <ion-card *ngFor="let pelicula of favoritos" color="dark">
     <img [src]="pelicula.imagen" [alt]="pelicula.titulo">
-    
-    <!-- Mostrar la información si no está en modo edición -->
-    <ion-card-header *ngIf="!pelicula.editing">
+    <ion-card-header>
       <ion-card-title color="warning">{{ pelicula.titulo }}</ion-card-title>
       <ion-card-subtitle color="light">{{ pelicula.genero }}</ion-card-subtitle>
     </ion-card-header>
-
-    <!-- Formulario de edición si está en modo edición -->
-    <ion-card-content *ngIf="pelicula.editing">
-      <ion-item>
-        <ion-label position="stacked" color="warning">Título</ion-label>
-        <ion-input [(ngModel)]="pelicula.titulo" placeholder="Editar título"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked" color="warning">Descripción</ion-label>
-        <ion-textarea [(ngModel)]="pelicula.descripcion" placeholder="Editar descripción"></ion-textarea>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked" color="warning">Género</ion-label>
-        <ion-input [(ngModel)]="pelicula.genero" placeholder="Editar género"></ion-input>
-      </ion-item>
-      <ion-button expand="block" color="success" (click)="guardarEdicion(pelicula)">Guardar</ion-button>
-    </ion-card-content>
-
-    <!-- Contenido y botones si no está en modo edición -->
-    <ion-card-content *ngIf="!pelicula.editing">
+    <ion-card-content color="light">
       <p>{{ pelicula.descripcion }}</p>
-      <p *ngIf="pelicula.nota">Nota: {{ pelicula.nota }}</p> <!-- Mostrar la nota si existe -->
-      <ion-button fill="clear" color="danger" (click)="eliminarFavorito(pelicula)">
-        Eliminar de favoritos
-      </ion-button>
-      <ion-button fill="clear" color="primary" (click)="habilitarEdicion(pelicula)">
-        Editar
-      </ion-button>
+
+      <!-- Personal Note and Rating -->
+      <ion-item>
+        <ion-label position="stacked" color="warning">¿Qué te pareció la película?</ion-label>
+        <ion-textarea [(ngModel)]="pelicula.nota" placeholder="Escribe tu nota..."></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked" color="warning">Calificación</ion-label>
+        <ion-select [(ngModel)]="pelicula.calificacion" (ionChange)="guardarCalificacion(pelicula)">
+          <ion-select-option *ngFor="let star of stars" [value]="star">{{ star }} estrella(s)</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Buttons -->
+      <ion-button color="danger" (click)="eliminarFavorito(pelicula)">Eliminar de favoritos</ion-button>
+      <ion-button color="success" (click)="guardarCalificacion(pelicula)">Guardar calificación y nota</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>
