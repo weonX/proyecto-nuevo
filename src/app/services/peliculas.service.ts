@@ -13,7 +13,7 @@ import { Pelicula } from './pelicula.interface'; // Interfaz definida
 })
 export class PeliculasService {
   private db!: SQLiteObject; // Ajustar el uso de `!` para evitar errores de inicialización
-  private apiUrl = 'http://10.16.55.209:3000/peliculas'; // URL de la API
+  private apiUrl = 'http://192.168.18.157:3000/peliculas'; // URL de la API
   private favoritosKey = 'favoritos'; // Clave para guardar favoritos en el storage
 
   constructor(
