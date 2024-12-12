@@ -41,8 +41,11 @@ export class FavoritosService {
       this.authService.getCurrentUser().subscribe(user => {
         if (user) {
           const userId = user.uid;
-          const favoritoIdStr = String(favorito.id);
-          this.firestore.collection('users').doc(userId).collection('favoritos').doc(favoritoIdStr).set(favorito).then(
+          const favoritoIdStr = String(favorito.id); // Convertimos el ID a string
+          this.firestore.collection('users').doc(userId).collection('favoritos').doc(favoritoIdStr).set({
+            ...favorito,
+            calificacion: favorito.calificacion || 0 // Se agrega calificación inicial en 0 si no está definida
+          }).then(
             () => observer.next(),
             error => observer.error(error)
           );
@@ -53,13 +56,13 @@ export class FavoritosService {
     });
   }
 
-  // ✅ Eliminar un favorito (Firebase y SQLite)
-  deleteFavorito(favoritoId: any): Observable<void> {
+  // ✅ Eliminar un favorito de Firebase
+  deleteFavorito(favoritoId: string | number): Observable<void> {
     return new Observable(observer => {
       this.authService.getCurrentUser().subscribe(user => {
         if (user) {
           const userId = user.uid;
-          const favoritoIdStr = String(favoritoId); 
+          const favoritoIdStr = String(favoritoId); // Convertimos el ID a string
           this.firestore.collection('users').doc(userId).collection('favoritos').doc(favoritoIdStr).delete().then(
             () => {
               console.log(`Favorito con ID ${favoritoIdStr} eliminado de Firebase.`);
@@ -74,18 +77,15 @@ export class FavoritosService {
     });
   }
 
-  // ✅ Calificar un favorito (Firebase y SQLite)
-  updateFavorito(favoritoId: string, data: any): Observable<void> {
+  // ✅ Actualizar un favorito (para la calificación)
+  updateFavorito(favoritoId: string | number, data: any): Observable<void> {
     return new Observable(observer => {
       this.authService.getCurrentUser().subscribe(user => {
         if (user) {
           const userId = user.uid;
-          const favoritoIdStr = String(favoritoId); 
+          const favoritoIdStr = String(favoritoId); // Convertimos el ID a string
           this.firestore.collection('users').doc(userId).collection('favoritos').doc(favoritoIdStr).update(data).then(
-            () => {
-              console.log(`Calificación de la película con ID ${favoritoIdStr} actualizada.`);
-              observer.next();
-            },
+            () => observer.next(),
             error => observer.error(error)
           );
         } else {

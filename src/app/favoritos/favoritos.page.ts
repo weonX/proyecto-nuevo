@@ -22,13 +22,17 @@ export class FavoritosPage implements OnInit {
   // ✅ Cargar los favoritos del usuario actual
   cargarFavoritos() {
     this.favoritosService.getFavoritos().subscribe(favoritos => {
-      this.favoritos = favoritos;
+      // Evitar duplicados de favoritos
+      this.favoritos = favoritos.filter((fav, index, self) => 
+        index === self.findIndex((f) => f.id === fav.id)
+      );
+      console.log('Favoritos cargados:', this.favoritos);
     }, error => {
       console.error('Error al cargar los favoritos:', error);
     });
   }
 
-  // ✅ Eliminar un favorito de Firebase y SQLite
+  // ✅ Eliminar un favorito de Firebase y de la lista local
   async eliminarFavorito(favoritoId: string) {
     const alert = await this.alertController.create({
       header: 'Confirmar',
@@ -38,10 +42,9 @@ export class FavoritosPage implements OnInit {
         { 
           text: 'Eliminar', 
           handler: () => {
-            const favoritoIdStr = String(favoritoId); // Convertir a string para asegurarnos
-            this.favoritosService.deleteFavorito(favoritoIdStr).subscribe(() => {
-              this.favoritos = this.favoritos.filter(fav => String(fav.id) !== favoritoIdStr);
-              console.log('Favorito eliminado correctamente');
+            this.favoritosService.deleteFavorito(favoritoId).subscribe(() => {
+              this.favoritos = this.favoritos.filter(fav => fav.id !== favoritoId);
+              console.log(`Favorito con ID ${favoritoId} eliminado correctamente`);
             }, error => {
               console.error('Error al eliminar el favorito:', error);
             });
@@ -56,7 +59,7 @@ export class FavoritosPage implements OnInit {
   // ✅ Calificar un favorito de 1 a 5 estrellas
   calificarFavorito(favoritoId: string, calificacion: number) {
     this.favoritosService.updateFavorito(favoritoId, { calificacion }).subscribe(() => {
-      const favorito = this.favoritos.find(fav => String(fav.id) === String(favoritoId));
+      const favorito = this.favoritos.find(fav => fav.id === favoritoId);
       if (favorito) favorito.calificacion = calificacion;
       console.log(`Calificación de la película con id ${favoritoId} guardada: ${calificacion}`);
     }, error => {
