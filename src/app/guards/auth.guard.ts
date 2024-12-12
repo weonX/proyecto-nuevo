@@ -1,25 +1,29 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service'; // Importa AuthService para verificar la autenticación
+import { AuthService } from '../services/auth.service';
+import { map, take } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private router: Router,
-    private authService: AuthService // Inyecta AuthService para verificar el estado de autenticación
+    private authService: AuthService,
+    private router: Router
   ) {}
 
-  // Método para proteger la ruta
-  async canActivate(): Promise<boolean> {
-    const isLoggedIn = await this.authService.isLoggedIn(); // Verifica si el usuario está autenticado
-    if (!isLoggedIn) {
-      // Si no está autenticado, redirige al login
-      this.router.navigate(['/login']);
-      return false; // Bloquea el acceso a la ruta
-    }
-    return true; // Permite el acceso si está autenticado
+  canActivate() {
+    return this.authService.getCurrentUser().pipe(
+      take(1),
+      map(user => {
+        if (user) {
+          return true;
+        } else {
+          this.router.navigate(['/login']);
+          return false;
+        }
+      })
+    );
   }
 }

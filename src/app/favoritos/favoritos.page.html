@@ -1,38 +1,45 @@
-<ion-content>
-  <ion-header>
-    <ion-toolbar color="dark">
-      <ion-buttons slot="start">
-        <ion-menu-button color="warning"></ion-menu-button>
-      </ion-buttons>
-      <ion-title color="warning">Favoritos</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button color="warning"></ion-menu-button>
+    </ion-buttons>
+    <ion-title color="warning">Favoritos</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-  <ion-card *ngFor="let pelicula of favoritos" color="dark">
-    <img [src]="pelicula.imagen" [alt]="pelicula.titulo">
-    <ion-card-header>
-      <ion-card-title color="warning">{{ pelicula.titulo }}</ion-card-title>
-      <ion-card-subtitle color="light">{{ pelicula.genero }}</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content color="light">
-      <p>{{ pelicula.descripcion }}</p>
+<ion-content class="page-favoritos">
+  <h2>Películas Favoritas</h2>
 
-      <!-- Personal Note and Rating -->
+  <ion-list>
+    <ion-card *ngFor="let favorito of favoritos" color="dark">
+      <!-- Imagen de la película -->
+      <img [src]="favorito.imagen" alt="Imagen de {{ favorito.titulo }}" style="width: 100%; height: 300px; object-fit: cover;">
+
+      <ion-card-header>
+        <ion-card-title color="warning">{{ favorito.titulo }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>{{ favorito.descripcion }}</p>
+      </ion-card-content>
+
+      <!-- Sección de calificación -->
       <ion-item>
-        <ion-label position="stacked" color="warning">¿Qué te pareció la película?</ion-label>
-        <ion-textarea [(ngModel)]="pelicula.nota" placeholder="Escribe tu nota..."></ion-textarea>
+        <ion-label>Calificar:</ion-label>
+        <div class="rating-container">
+          <ion-icon 
+            *ngFor="let star of [1, 2, 3, 4, 5]" 
+            name="{{ favorito.calificacion >= star ? 'star' : 'star-outline' }}" 
+            (click)="calificarFavorito(favorito.id, star)">
+          </ion-icon>
+        </div>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked" color="warning">Calificación</ion-label>
-        <ion-select [(ngModel)]="pelicula.calificacion" (ionChange)="guardarCalificacion(pelicula)">
-          <ion-select-option *ngFor="let star of stars" [value]="star">{{ star }} estrella(s)</ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <!-- Buttons -->
-      <ion-button color="danger" (click)="eliminarFavorito(pelicula)">Eliminar de favoritos</ion-button>
-      <ion-button color="success" (click)="guardarCalificacion(pelicula)">Guardar calificación y nota</ion-button>
-    </ion-card-content>
-  </ion-card>
+      <!-- Botón para eliminar -->
+      <ion-button expand="block" color="danger" (click)="eliminarFavorito(favorito.id)">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Eliminar
+      </ion-button>
+    </ion-card>
+  </ion-list>
 </ion-content>

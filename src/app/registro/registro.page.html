@@ -3,21 +3,31 @@
     <ion-title>Registro</ion-title>
   </ion-toolbar>
 </ion-header>
-  <ion-content class="ion-padding">
-    <div class="registro-form">
-      <ion-item>
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-input [(ngModel)]="nombre" type="text"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Email</ion-label>
-        <ion-input [(ngModel)]="email" type="email"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input [(ngModel)]="contrasena" type="password"></ion-input>
-      </ion-item>
-      <ion-button expand="block" (click)="registrar()">Registrarse</ion-button>
-      <ion-button expand="block" fill="clear" (click)="volverALogin()">Volver a Iniciar Sesión</ion-button>
-    </div>
-  </ion-content>
+
+<ion-content class="ion-padding">
+  <div class="registro-form">
+    <!-- Campo para el nombre del usuario -->
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input [(ngModel)]="nombre" type="text"></ion-input>
+    </ion-item>
+
+    <!-- Campo para el correo electrónico -->
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input [(ngModel)]="email" type="email"></ion-input>
+    </ion-item>
+
+    <!-- Campo para la contraseña -->
+    <ion-item>
+      <ion-label position="floating">Contraseña</ion-label>
+      <ion-input [(ngModel)]="contrasena" type="password"></ion-input>
+    </ion-item>
+
+    <!-- Botón para registrar un usuario -->
+    <ion-button expand="block" (click)="registrar()">Registrarse</ion-button>
+
+    <!-- Botón para volver al inicio de sesión -->
+    <ion-button expand="block" fill="clear" (click)="volverALogin()">Volver a Iniciar Sesión</ion-button>
+  </div>
+</ion-content>

@@ -1,52 +1,97 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoritosService {
+  constructor(
+    private firestore: AngularFirestore,
+    private authService: AuthService
+  ) {}
 
-  private apiUrl = 'http://192.168.18.157:3000/favoritos'; // Asegúrate de que esta sea la URL correcta
-
-  constructor(private http: HttpClient) { }
-
-  // Eliminar un favorito desde el backend (API REST)
-  eliminarFavorito(id: number): Observable<any> {
-    console.log('Eliminando favorito con ID:', id);
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
-      catchError((error) => {
-        console.error('Error en la eliminación del favorito:', error);
-        return throwError(error); // Devolver el error para que sea manejado en el componente
-      })
-    );
+  // ✅ Obtener la lista de favoritos del usuario autenticado
+  getFavoritos(): Observable<any[]> {
+    return new Observable(observer => {
+      this.authService.getCurrentUser().subscribe(user => {
+        if (user) {
+          const userId = user.uid;
+          this.firestore.collection('users').doc(userId).collection('favoritos').snapshotChanges().subscribe(
+            res => {
+              const favoritos = res.map(doc => ({
+                id: doc.payload.doc.id,
+                ...doc.payload.doc.data()
+              }));
+              observer.next(favoritos);
+            },
+            error => observer.error(error)
+          );
+        } else {
+          observer.error('Usuario no autenticado.');
+        }
+      });
+    });
   }
 
-  // Actualizar un favorito en el backend (API REST)
-  actualizarFavorito(id: number, favorito: any): Observable<any> {
-    console.log('Actualizando favorito con ID:', id);
-    console.log('Datos de la película:', favorito);
-    return this.http.put(`${this.apiUrl}/${id}`, favorito).pipe(
-      catchError((error) => {
-        console.error('Error en la actualización del favorito:', error);
-        return throwError(error); // Devolver el error para que sea manejado en el componente
-      })
-    );
+  // ✅ Agregar un favorito
+  addFavorito(favorito: any): Observable<void> {
+    return new Observable(observer => {
+      this.authService.getCurrentUser().subscribe(user => {
+        if (user) {
+          const userId = user.uid;
+          const favoritoIdStr = String(favorito.id);
+          this.firestore.collection('users').doc(userId).collection('favoritos').doc(favoritoIdStr).set(favorito).then(
+            () => observer.next(),
+            error => observer.error(error)
+          );
+        } else {
+          observer.error('Usuario no autenticado.');
+        }
+      });
+    });
   }
 
-  // Agregar un nuevo favorito
-  agregarFavorito(favorito: any): Observable<any> {
-    console.log('Agregando favorito:', favorito);
-    if (!favorito.id) {
-      favorito.id = new Date().getTime();  // Generar un ID basado en el tiempo
-    }
-    return this.http.post(this.apiUrl, favorito).pipe(
-      catchError((error) => {
-        console.error('Error al agregar favorito:', error);
-        return throwError(error);
-      })
-    );
+  // ✅ Eliminar un favorito (Firebase y SQLite)
+  deleteFavorito(favoritoId: any): Observable<void> {
+    return new Observable(observer => {
+      this.authService.getCurrentUser().subscribe(user => {
+        if (user) {
+          const userId = user.uid;
+          const favoritoIdStr = String(favoritoId); 
+          this.firestore.collection('users').doc(userId).collection('favoritos').doc(favoritoIdStr).delete().then(
+            () => {
+              console.log(`Favorito con ID ${favoritoIdStr} eliminado de Firebase.`);
+              observer.next();
+            },
+            error => observer.error(error)
+          );
+        } else {
+          observer.error('Usuario no autenticado.');
+        }
+      });
+    });
+  }
+
+  // ✅ Calificar un favorito (Firebase y SQLite)
+  updateFavorito(favoritoId: string, data: any): Observable<void> {
+    return new Observable(observer => {
+      this.authService.getCurrentUser().subscribe(user => {
+        if (user) {
+          const userId = user.uid;
+          const favoritoIdStr = String(favoritoId); 
+          this.firestore.collection('users').doc(userId).collection('favoritos').doc(favoritoIdStr).update(data).then(
+            () => {
+              console.log(`Calificación de la película con ID ${favoritoIdStr} actualizada.`);
+              observer.next();
+            },
+            error => observer.error(error)
+          );
+        } else {
+          observer.error('Usuario no autenticado.');
+        }
+      });
+    });
   }
 }

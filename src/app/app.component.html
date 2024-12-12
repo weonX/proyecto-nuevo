@@ -1,37 +1,33 @@
 <ion-app>
   <ion-menu side="start" menuId="main-menu" contentId="main-content">
     <ion-header>
-      <ion-toolbar>
-        <ion-title>Menú</ion-title>
+      <ion-toolbar color="dark">
+        <ion-title color="warning">Menú</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item *ngIf="fotoPerfil"> <!-- Mostrar solo si fotoPerfil está definido -->
+        <ion-item *ngIf="fotoPerfil">
           <ion-avatar slot="start">
             <img [src]="fotoPerfil" alt="Foto de perfil" />
           </ion-avatar>
         </ion-item>
 
-        <!-- Llama a la función navigateToHome() -->
         <ion-item (click)="navigateToHome()">
           <ion-icon name="home" slot="start"></ion-icon>
           <ion-label>Inicio</ion-label>
         </ion-item>
 
-        <!-- Llama a la función navigateToFavoritos() -->
         <ion-item (click)="navigateToFavoritos()">
           <ion-icon name="heart" slot="start"></ion-icon>
           <ion-label>Favoritos</ion-label>
         </ion-item>
 
-        <!-- Llama a la función navigateToPerfil() -->
         <ion-item (click)="navigateToPerfil()">
           <ion-icon name="person" slot="start"></ion-icon>
           <ion-label>Perfil</ion-label>
         </ion-item>
 
-        <!-- Llama a la función cerrarSesion() -->
         <ion-item (click)="cerrarSesion()">
           <ion-icon name="log-out" slot="start"></ion-icon>
           <ion-label>Cerrar Sesión</ion-label>
@@ -41,9 +37,4 @@
   </ion-menu>
 
   <ion-router-outlet id="main-content"></ion-router-outlet>
-
-  <!-- Avatar en la parte inferior izquierda -->
-  <ion-avatar *ngIf="fotoPerfil" class="profile-avatar">
-    <img [src]="fotoPerfil" alt="Foto de perfil" />
-  </ion-avatar>
 </ion-app>

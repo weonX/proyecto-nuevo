@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
-import { AlertController, ModalController } from '@ionic/angular';
-import { AuthService } from '../services/auth.service'; // Servicio de autenticación
-import { LoginSuccessModalComponent } from './login-success-modal.component'; // Modal opcional
+import { AlertController } from '@ionic/angular';
+import { AuthService } from '../services/auth.service'; 
 
 @Component({
   selector: 'app-login',
@@ -10,41 +9,36 @@ import { LoginSuccessModalComponent } from './login-success-modal.component'; //
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
-  email: string = ''; // Variable para almacenar el correo electrónico ingresado
-  password: string = ''; // Variable para almacenar la contraseña ingresada
+  email: string = ''; 
+  password: string = ''; 
 
   constructor(
     private router: Router,
     private alertController: AlertController,
-    private authService: AuthService, // Servicio de autenticación
-    private modalController: ModalController
+    private authService: AuthService
   ) {}
 
   // Método para manejar el inicio de sesión
   async login() {
-    const isAuthenticated = await this.authService.login(this.email, this.password);
+    if (!this.email || !this.password) {
+      this.mostrarAlerta('Error', 'Por favor, completa todos los campos.');
+      return;
+    }
 
-    if (isAuthenticated) {
-      // Si el inicio de sesión es exitoso, mostramos el modal de éxito (opcional)
-      await this.presentModal();
-
-      // Pasar el nombre de usuario (email en este caso) a la página de inicio
+    try {
+      await this.authService.login(this.email, this.password);
       const navigationExtras: NavigationExtras = {
-        state: {
-          username: this.email
-        }
+        state: { username: this.email }
       };
-
-      // Redirigir a la página de inicio con el nombre de usuario
+      this.mostrarAlerta('Éxito', 'Inicio de sesión exitoso.');
       this.router.navigate(['/home'], navigationExtras);
-    } else {
-      // Si el inicio de sesión falla, mostramos una alerta de error
-      await this.presentAlert('Error', 'Correo electrónico o contraseña incorrectos. Por favor, inténtalo de nuevo.');
+    } catch (error: any) {
+      this.mostrarAlerta('Error', this.obtenerMensajeDeError(error));
+      console.error('Error al iniciar sesión:', error);
     }
   }
 
-  // Método para mostrar una alerta
-  async presentAlert(header: string, message: string) {
+  async mostrarAlerta(header: string, message: string) {
     const alert = await this.alertController.create({
       header, 
       message, 
@@ -53,21 +47,22 @@ export class LoginPage {
     await alert.present(); 
   }
 
-  // Método para mostrar el modal de éxito al iniciar sesión (opcional)
-  async presentModal() {
-    const modal = await this.modalController.create({
-      component: LoginSuccessModalComponent, 
-      cssClass: 'my-custom-class',
-    });
-    return await modal.present();
+  obtenerMensajeDeError(error: any): string {
+    if (error.code === 'auth/wrong-password') {
+      return 'La contraseña es incorrecta.';
+    } else if (error.code === 'auth/user-not-found') {
+      return 'No se encontró una cuenta con este correo.';
+    } else if (error.code === 'auth/invalid-email') {
+      return 'El formato de correo no es válido.';
+    } else {
+      return 'Ocurrió un error desconocido. Inténtalo de nuevo.';
+    }
   }
 
-  // Método para navegar a la página de registro
   navigateToRegistro() {
     this.router.navigate(['/registro']);
   }
 
-  // Método para navegar a la página de restablecimiento de contraseña
   navigateToResetPassword() {
     this.router.navigate(['/reset-password']);
   }
